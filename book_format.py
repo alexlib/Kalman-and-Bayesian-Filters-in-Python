@@ -26,7 +26,7 @@ import numpy as np
 import os.path
 import sys
 import warnings
-from kf_book.book_plots import set_figsize, reset_axis
+from kf_book.book_plots import set_figsize, reset_figsize
 
 # version 1.4.3 of matplotlib has a bug that makes
 # it issue a spurious warning on every plot that
@@ -34,7 +34,6 @@ from kf_book.book_plots import set_figsize, reset_axis
 if matplotlib.__version__ == '1.4.3':
     warnings.simplefilter(action="ignore", category=FutureWarning)
 
-np.set_printoptions(precision=3)
 try:
     matplotlib.style.use('default')
 except:
@@ -46,7 +45,7 @@ def test_filterpy_version():
     from distutils.version import LooseVersion
 
     v = filterpy.__version__
-    min_version = "1.1.0"
+    min_version = "1.4.4"
     if LooseVersion(v) < LooseVersion(min_version):
        raise Exception("Minimum FilterPy version supported is {}.\n"
                        "Please install a more recent version.\n"
@@ -60,16 +59,14 @@ def test_filterpy_version():
 test_filterpy_version()
 
 pylab.rcParams['figure.max_open_warning'] = 50
-pylab.rcParams['figure.figsize'] = 8, 3
-
 
 
 @contextmanager
 def numpy_precision(precision):
-	old = np.get_printoptions()['precision']
-	np.set_printoptions(precision=precision)
-	yield
-	np.set_printoptions(old)
+    old = np.get_printoptions()['precision']
+    np.set_printoptions(precision=precision)
+    yield
+    np.set_printoptions(old)
 
 @contextmanager
 def printoptions(*args, **kwargs):
@@ -105,22 +102,37 @@ def _decode_dict(data):
     return rv
 
 
-def load_style(directory = '.', name='kf_book/custom.css'):
-        version = [int(version_no) for version_no in matplotlib.__version__.split('.')]
+def set_style():
+    version = [int(version_no) for version_no in matplotlib.__version__.split('.')]
 
-        try:
-            if sys.version_info[0] >= 3:
-                style = json.load(open(os.path.join(directory, "kf_book/538.json")))
-            else:
-                style = json.load(open(directory + "/kf_book/538.json"), object_hook=_decode_dict)
-            plt.rcParams.update(style)
-        except:
-            pass
-        set_figsize()
-        reset_axis ()
-        np.set_printoptions(suppress=True, precision=3, linewidth=70,
-                            formatter={'float':lambda x:' {:.3}'.format(x)})
+    try:
+        if sys.version_info[0] >= 3:
+            style = json.load(open("./kf_book/538.json"))
+        else:
+            style = json.load(open(".//kf_book/538.json"), object_hook=_decode_dict)
+        plt.rcParams.update(style)
+    except:
+        pass
+    np.set_printoptions(suppress=True, precision=3, 
+                        threshold=10000., linewidth=70,
+                        formatter={'float':lambda x:' {:.3}'.format(x)})
 
-        styles = open(os.path.join(directory, name), 'r').read()
-        set_figsize()
-        return HTML(styles)
+    # I don't know why I have to do this, but I have to call
+    # with suppress a second time or the notebook doesn't suppress
+    # exponents
+    np.set_printoptions(suppress=True)
+    reset_figsize()
+
+    style = '''
+        <style>
+        .output_wrapper, .output {
+            height:auto !important;
+            max-height:100000px; 
+        }
+        .output_scroll {
+            box-shadow:none !important;
+            webkit-box-shadow:none !important;
+        }
+        </style>
+    '''
+    return HTML(style)
