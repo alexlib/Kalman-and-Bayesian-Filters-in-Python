@@ -13,52 +13,90 @@ This is licensed under an MIT license. See the LICENSE.txt file
 for more information.
 """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
 from contextlib import contextmanager
 from IPython.core.display import HTML
 import json
-import matplotlib
-import matplotlib.pylab as pylab
-import matplotlib.pyplot as plt
-import numpy as np
 import os.path
 import sys
 import warnings
 from kf_book.book_plots import set_figsize, reset_figsize
 
-# version 1.4.3 of matplotlib has a bug that makes
-# it issue a spurious warning on every plot that
-# clutters the notebook output
-if matplotlib.__version__ == '1.4.3':
-    warnings.simplefilter(action="ignore", category=FutureWarning)
+def test_installation():
+    try:
+        import filterpy
+    except:
+        print("Please install FilterPy from the command line by running the command\n\t$ pip install filterpy\n\nSee chapter 0 for instructions.")
+
+    try:
+        import numpy
+    except:
+        print("Please install NumPy before continuing. See chapter 0 for instructions.")
+
+    try:
+        import scipy
+    except:
+        print("Please install SciPy before continuing. See chapter 0 for instructions.")
+
+    try:
+        import sympy
+    except:
+        print("Please install SymPy before continuing. See chapter 0 for instructions.")
+
+    try:
+        import matplotlib
+    except:
+        print("Please install matplotlib before continuing. See chapter 0 for instructions.")
+
+    from distutils.version import LooseVersion
+
+    v = filterpy.__version__
+    min_version = "1.4.4"
+    if LooseVersion(v) < LooseVersion(min_version):
+       print("Minimum FilterPy version supported is {}. "
+             "Please install a more recent version.\n"
+             "   ex: pip install filterpy --upgrade".format(
+             min_version))
+
+
+    v = matplotlib.__version__
+    min_version = "3.0" # this is really old!!!
+    if LooseVersion(v) < LooseVersion(min_version):
+       print("Minimum Matplotlib version supported is {}. "
+             "Please install a more recent version.".format(min_version))
+
+    # require Python 3.6+
+    import sys
+    v = sys.version_info
+    if v.major < 3 or (v.major == 3 and v.minor < 6):
+        print('You must use Python version 3.6 or later for the notebooks to work correctly')
+
+
+    # need to add test for IPython. I think I want to be at 6, which also implies
+    # Python 3, matplotlib 2+, etc.
+
+# ensure that we have the correct packages loaded. This is
+# called when this module is imported at the top of each book
+# chapter so the reader can see that they need to update their environment.
+test_installation()
+
+
+# now that we've tested the existence of all packages go ahead and import
+
+import matplotlib
+import matplotlib.pylab as pylab
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 try:
     matplotlib.style.use('default')
 except:
     pass
 
-def test_filterpy_version():
 
-    import filterpy
-    from distutils.version import LooseVersion
-
-    v = filterpy.__version__
-    min_version = "1.4.4"
-    if LooseVersion(v) < LooseVersion(min_version):
-       raise Exception("Minimum FilterPy version supported is {}.\n"
-                       "Please install a more recent version.\n"
-                       "   ex: pip install filterpy --upgrade".format(
-             min_version))
-
-
-# ensure that we have the correct filterpy loaded. This is
-# called when this module is imported at the top of each book
-# chapter so the reader can see that they need to update FilterPy.
-test_filterpy_version()
-
-pylab.rcParams['figure.max_open_warning'] = 50
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", matplotlib.MatplotlibDeprecationWarning)
+    pylab.rcParams['figure.max_open_warning'] = 50
 
 
 @contextmanager
@@ -110,10 +148,13 @@ def set_style():
             style = json.load(open("./kf_book/538.json"))
         else:
             style = json.load(open(".//kf_book/538.json"), object_hook=_decode_dict)
-        plt.rcParams.update(style)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", matplotlib.MatplotlibDeprecationWarning)
+            plt.rcParams.update(style)
     except:
         pass
-    np.set_printoptions(suppress=True, precision=3, 
+    np.set_printoptions(suppress=True, precision=3,
                         threshold=10000., linewidth=70,
                         formatter={'float':lambda x:' {:.3}'.format(x)})
 
@@ -127,12 +168,16 @@ def set_style():
         <style>
         .output_wrapper, .output {
             height:auto !important;
-            max-height:100000px; 
+            max-height:100000px;
         }
         .output_scroll {
             box-shadow:none !important;
             webkit-box-shadow:none !important;
         }
         </style>
+    '''
+    jscript = '''
+        %%javascript
+        IPython.OutputArea.auto_scroll_threshold = 9999;
     '''
     return HTML(style)
