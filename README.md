@@ -1,7 +1,7 @@
 # [Kalman and Bayesian Filters in Python](https://github.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python)
 
 
-Introductory text for Kalman and Bayesian filters. All code is written in Python, and the book itself is written using Juptyer Notebook so that you can run and modify the code in your browser. What better way to learn?
+Introductory text for Kalman and Bayesian filters. All code is written in Python, and the book itself is written using Jupyter Notebook so that you can run and modify the code in your browser. What better way to learn?
 
 
 **"Kalman and Bayesian Filters in Python" looks amazing! ... your book is just what I needed** - Allen Downey, Professor and O'Reilly author.
@@ -12,8 +12,6 @@ Start reading online now by clicking the binder or Azure badge below:
 
 
 [![Binder](http://mybinder.org/badge.svg)](https://beta.mybinder.org/v2/gh/rlabbe/Kalman-and-Bayesian-Filters-in-Python/master)
-<a href="https://notebooks.azure.com/import/gh/rlabbe/Kalman-and-Bayesian-Filters-in-Python"><img src="https://notebooks.azure.com/launch.png" /></a>
-
 
 
 ![alt tag](https://raw.githubusercontent.com/rlabbe/Kalman-and-Bayesian-Filters-in-Python/master/animations/05_dog_track.gif)
@@ -27,7 +25,7 @@ In simple cases the solution is obvious. If my scale gives slightly different re
 
 This book teaches you how to solve these sorts of filtering problems. I use many different algorithms, but they are all based on Bayesian probability. In simple terms Bayesian probability determines what is likely to be true based on past information.
 
-If I asked you the heading of my car at this moment you would have no idea. You'd proffer a number between 1° and 360° degrees, and have a 1 in 360 chance of being right. Now suppose I told you that 2 seconds ago its heading was 243°. In 2 seconds my car could not turn very far, so you could make a far more accurate prediction. You are using past information to more accurately infer information about the present or future.
+If I asked you the heading of my car at this moment you would have no idea. You'd prefer a number between 1° and 360° degrees, and have a 1 in 360 chance of being right. Now suppose I told you that 2 seconds ago its heading was 243°. In 2 seconds my car could not turn very far, so you could make a far more accurate prediction. You are using past information to more accurately infer information about the present or future.
 
 The world is also noisy. That prediction helps you make a better estimate, but it also subject to noise. I may have just braked for a dog or swerved around a pothole. Strong winds and ice on the road are external influences on the path of my car. In control literature we call this noise though you may not think of it that way.
 
@@ -102,7 +100,7 @@ The book and supporting software can be downloaded from GitHub by running this c
 
 Instructions for installation of the IPython ecosystem can be found in the Installation appendix, found [here](http://nbviewer.ipython.org/github/rlabbe/Kalman-and-Bayesian-Filters-in-Python/blob/master/Appendix-A-Installation.ipynb).
 
-Once the software is installed you can navigate to the installation directory and run Juptyer notebook with the command line instruction
+Once the software is installed you can navigate to the installation directory and run Jupyter notebook with the command line instruction
 
     jupyter notebook
 
